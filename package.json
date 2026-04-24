@@ -12,13 +12,6 @@
     "concurrently": "^8.2.2",
     "husky": "^8.0.3",
     "lint-staged": "^15.2.0"
-  },
-  "lint-staged": {
-    "frontend/src/**/*.{ts,tsx}": [
-      "npm run lint --prefix frontend"
-    ],
-    "backend/src/**/*.ts": [
-      "npm run lint --prefix backend"
-    ]
   }
 }
+

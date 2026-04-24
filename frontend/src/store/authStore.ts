@@ -57,7 +57,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: async () => {
     try {
       await authApi.logout();
-    } catch (e) {}
+    } catch (e) {
+      console.warn("Logout request failed, clearing local session anyway", e);
+    }
     localStorage.removeItem('token');
     set({ user: null, token: null, isAuthenticated: false });
     window.location.href = '/login';

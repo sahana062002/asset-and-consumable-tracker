@@ -19,7 +19,9 @@ export default function ScanPageContainer() {
     try {
       const stored = localStorage.getItem('scan_history');
       if (stored) setHistory(JSON.parse(stored));
-    } catch (e) {}
+    } catch (e) {
+      console.error("History retrieval failed", e);
+    }
   }, []);
 
   const handleScanSuccess = (decodedText: string) => {

@@ -50,12 +50,14 @@ export default function AssetDetailUserPage() {
         history.unshift({ code: asset.assetCode, name: asset.name, type: asset.type, timestamp: Date.now() });
         history = history.slice(0, 10);
         localStorage.setItem('scan_history', JSON.stringify(history));
-      } catch(e) {}
+      } catch(e) {
+        console.error("Local history sync failed", e);
+      }
       
       // Seed location
       if (!locationId) setLocationId(String(asset.locationId));
     }
-  }, [asset]);
+  }, [asset, locationId]);
 
   const updateLocationMutation = useMutation({
     mutationFn: (payload: any) => assetsApi.updateLocation(asset.id, payload),

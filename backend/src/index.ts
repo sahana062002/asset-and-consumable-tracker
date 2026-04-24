@@ -1,6 +1,7 @@
 /// <reference path="./types/express.d.ts" />
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
 import dotenv from 'dotenv';
 import path from 'path';
 import authRoutes from './routes/auth.routes';
@@ -15,6 +16,9 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(helmet({
+  crossOriginResourcePolicy: false, // Allow cross-origin images/assets
+}));
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 
