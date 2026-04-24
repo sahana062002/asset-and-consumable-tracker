@@ -1,4 +1,4 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import {
   Package,
@@ -53,9 +53,18 @@ export default function AdminLayout() {
   return (
     <div className="min-h-screen bg-muted/20 flex flex-col md:flex-row">
       <aside className="hidden md:flex flex-col w-64 border-r bg-card h-screen sticky top-0 shadow-sm">
-        <div className="h-16 flex items-center px-6 border-b">
-          <Package className="w-6 h-6 text-primary mr-2" />
-          <span className="font-bold text-lg">AssetTrack Pro</span>
+        <div className="h-24 flex items-center justify-center border-b">
+          <Link to={ROUTES.DASHBOARD} className="flex flex-col items-center group px-4">
+            <img 
+              src="/asset-tracker-logo.png" 
+              className="h-12 w-12 mb-1 group-hover:rotate-12 transition-transform duration-300" 
+              alt="logo" 
+              onError={(e) => {
+                // Fallback if public logo is missing
+                e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3081/3081840.png";
+              }}
+            />
+          </Link>
         </div>
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => (
@@ -76,57 +85,38 @@ export default function AdminLayout() {
             </NavLink>
           ))}
         </nav>
-        <div className="p-4 border-t">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+        <div className="p-4 border-t space-y-2">
+          <div className="flex items-center w-full px-2 py-2 mb-2">
+            <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold mr-3 uppercase shrink-0">
+              {user?.name.charAt(0)}
+            </div>
+            <div className="overflow-hidden flex-1 text-left">
+              <p className="text-sm font-medium truncate text-foreground">
+                {user?.name}
+              </p>
+              <p className="text-xs text-muted-foreground truncate uppercase tracking-wider">
+                {user?.role}
+              </p>
+            </div>
+          </div>
+          
+          <ChangePasswordDialog />
+          
+          <ConfirmDialog
+            title="Exit System Workspace?"
+            description="Are you sure you want to end your active session?"
+            onConfirm={() => logout()}
+            confirmText="Exit Workspace"
+            variant="destructive"
+            trigger={
               <Button
                 variant="ghost"
-                className="w-full h-auto p-2 justify-start hover:bg-muted/50 transition-colors group"
+                className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 h-10 px-4"
               >
-                <div className="flex items-center w-full">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold mr-3 uppercase shrink-0">
-                    {user?.name.charAt(0)}
-                  </div>
-                  <div className="overflow-hidden flex-1 text-left">
-                    <p className="text-sm font-medium truncate text-foreground group-hover:text-primary transition-colors">
-                      {user?.name}
-                    </p>
-                    <p className="text-xs text-muted-foreground truncate uppercase tracking-wider">
-                      {user?.role}
-                    </p>
-                  </div>
-                  <ChevronUp size={16} className="text-muted-foreground ml-2" />
-                </div>
+                <LogOut size={16} className="mr-2" /> Logout 
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" side="top" className="w-56 mb-2">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <User size={16} className="mr-2" /> Profile Overview
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {/* Note: ChangePasswordDialog handles its own trigger inside DropdownMenuItem might be tricky, 
-                  better to just put the logic here or wrap the dialog trigger */}
-              <ChangePasswordDialog />
-              <DropdownMenuSeparator />
-              <ConfirmDialog
-                title="Exit System Workspace?"
-                description="Are you sure you want to end your active session?"
-                onConfirm={() => logout()}
-                confirmText="Exit Workspace"
-                variant="destructive"
-                trigger={
-                  <DropdownMenuItem
-                    className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-                    onSelect={(e) => e.preventDefault()}
-                  >
-                    <LogOut size={16} className="mr-2" /> Logout Session
-                  </DropdownMenuItem>
-                }
-              />
-            </DropdownMenuContent>
-          </DropdownMenu>
+            }
+          />
         </div>
       </aside>
 

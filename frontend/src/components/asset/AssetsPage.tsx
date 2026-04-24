@@ -218,13 +218,13 @@ export default function AssetsPageUI({
             )
           : 0;
         return (
-          <div className="w-full flex items-center space-x-2">
-            <span className="text-xs font-semibold whitespace-nowrap">
+          <div className="flex items-center space-x-3 w-full max-w-[240px]">
+            <span className="text-[11px] font-bold tabular-nums whitespace-nowrap min-w-[65px]">
               {row.quantity} / {row.initialQuantity}
             </span>
-            <div className="h-2 w-full bg-secondary rounded-full overflow-hidden shrink-0 min-w-[50px]">
+            <div className="h-2 flex-1 bg-secondary rounded-full overflow-hidden">
               <div
-                className={`h-full rounded-full transition-all ${pct < 20 ? "bg-destructive" : pct < 50 ? "bg-orange-500" : "bg-emerald-500"}`}
+                className={`h-full rounded-full transition-all duration-500 ${pct < 20 ? "bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.5)]" : pct < 50 ? "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.3)]" : "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]"}`}
                 style={{ width: `${pct}%` }}
               ></div>
             </div>

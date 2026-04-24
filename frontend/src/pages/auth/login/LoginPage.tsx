@@ -28,8 +28,8 @@ export default function LoginPageUI({
       <Card className="w-full max-w-md shadow-lg border-t-4 border-t-primary">
         <CardHeader className="space-y-2 text-center pb-8 pt-8">
           <div className="flex justify-center mb-2">
-            <div className="p-3 bg-primary/10 rounded-full">
-               <Package className="w-8 h-8 text-primary" />
+            <div className="p-3 rounded-full">
+               <img src="/public/asset-tracker-logo.png" className="h-20 w-20" alt="logo" />
             </div>
           </div>
           <CardTitle className="text-3xl font-bold tracking-tight">Asset Tracker</CardTitle>
