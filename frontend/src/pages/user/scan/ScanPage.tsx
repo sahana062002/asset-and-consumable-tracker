@@ -58,15 +58,10 @@ export default function ScanPageUI({
 
       <div className="mt-4">
         {view === 'camera' ? (
-          <div className="bg-card rounded-2xl shadow-xl overflow-hidden border border-border flex flex-col items-center p-6 relative max-w-md mx-auto">
+          <div className="bg-card rounded-2xl shadow-xl overflow-hidden border border-border flex flex-col items-center p-6 relative max-w-xl mx-auto w-full">
             {/* Viewfinder Target Area */}
-            <div className="w-full aspect-[4/3] relative mb-4">
-               <div className={`absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 rounded-tl-lg transition-colors ${isScanning ? 'border-primary animate-pulse' : 'border-muted-foreground'}`}></div>
-               <div className={`absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 rounded-tr-lg transition-colors ${isScanning ? 'border-primary animate-pulse' : 'border-muted-foreground'}`}></div>
-               <div className={`absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 rounded-bl-lg transition-colors ${isScanning ? 'border-primary animate-pulse' : 'border-muted-foreground'}`}></div>
-               <div className={`absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 rounded-br-lg transition-colors ${isScanning ? 'border-primary animate-pulse' : 'border-muted-foreground'}`}></div>
-               
-               <div id="reader" className="w-full h-full bg-black/10 rounded overflow-hidden absolute inset-0 z-0"></div>
+            <div className="w-full aspect-video relative mb-4 overflow-hidden rounded-xl border-2 border-primary/20 shadow-inner bg-black">
+               <div id="reader" className="w-full h-full absolute inset-0 z-0"></div>
                
                <div className="w-full h-full relative z-10 pointer-events-none flex flex-col items-center justify-center">
                  {!isScanning && !error && (
@@ -92,7 +87,7 @@ export default function ScanPageUI({
                 </Button>
               ) : (
                 <Button onClick={() => stopScan()} variant="destructive" className="px-10 h-11 text-sm font-bold shadow-md hover:scale-[1.05] transition-transform">
-                   <XCircle size={18} className="mr-2" /> Sever Feed
+                   <XCircle size={18} className="mr-2" /> Stop Scanning
                 </Button>
               )}
             </div>

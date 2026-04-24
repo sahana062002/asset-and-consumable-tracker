@@ -82,17 +82,7 @@ export default function UserLayout() {
         </div>
       </header>
 
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 sm:hidden w-[90%] max-w-[320px]">
-        <Button
-          size="lg"
-          className="w-full rounded-2xl shadow-xl px-6 py-6 h-auto text-md flex items-center justify-center space-x-3"
-        >
-          <ScanLine size={24} />
-          <span className="font-semibold text-lg hover:scale-105 transition-transform">
-            Tap to Scan QR Code
-          </span>
-        </Button>
-      </div>
+      
 
       <main className="flex-1 w-full max-w-[1200px] mx-auto p-4 sm:p-6 pb-32 md:pb-8">
         <Outlet />

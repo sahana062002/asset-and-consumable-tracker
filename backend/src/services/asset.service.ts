@@ -224,15 +224,10 @@ export class AssetService {
         notes: data.notes
       });
 
+      await tx.update(assets).set({ quantity: quantityAfter }).where(eq(assets.id, id));
+
       if (quantityAfter === 0) {
-        await tx.update(assets).set({ 
-          quantity: 0,
-          status: 'disposed',
-          disposedAt: new Date(),
-          disposedBy: userId
-        }).where(eq(assets.id, id));
-      } else {
-        await tx.update(assets).set({ quantity: quantityAfter }).where(eq(assets.id, id));
+        return { requiresDisposalPhoto: true };
       }
 
       const updatedAsset = await tx.select().from(assets).where(eq(assets.id, id));

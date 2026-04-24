@@ -40,7 +40,11 @@ export function useQRScanner(
         { facingMode: "environment" },
         {
           fps: 10,
-          qrbox: { width: 250, height: 250 }
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+            const size = Math.floor(minEdge * 0.8);
+            return { width: size, height: size };
+          }
         },
         (decodedText) => {
           onScanSuccess(decodedText);

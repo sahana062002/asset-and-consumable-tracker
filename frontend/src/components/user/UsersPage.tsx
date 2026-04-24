@@ -184,7 +184,7 @@ export default function UsersPageUI({
   return (
     <>
       <PageHeader
-        title="Fleet User Management"
+        title="User Management"
         subtitle="Administer organizational employee authentications, security roles, and deep application access tiers."
         action={
           <Button

@@ -70,10 +70,10 @@ export default function AssetDetailsPageUI({
           onClick={onNavigateBack}
           className="mr-4 hover:bg-muted text-muted-foreground border border-transparent shadow-sm hover:text-foreground"
         >
-          <ArrowLeft size={16} className="mr-2" /> Directory Matrix
+          <ArrowLeft size={16} className="mr-2" /> Back to Assets
         </Button>
         <h2 className="text-2xl font-bold tracking-tight">
-          Signal Analysis Module
+          Asset Details
         </h2>
       </div>
 
@@ -94,7 +94,7 @@ export default function AssetDetailsPageUI({
                   className="flex-1 text-xs sm:text-sm font-semibold"
                   onClick={() => barcodeUtils.print(asset.assetCode)}
                 >
-                  <Printer size={16} className="mr-2" /> Print Array
+                  <Printer size={16} className="mr-2" /> Print
                 </Button>
                 <Button
                   variant="secondary"
@@ -215,16 +215,16 @@ export default function AssetDetailsPageUI({
         </div>
 
         {/* Temporal Logs */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 h-[600px]">
           <div className="bg-card shadow-sm border border-border rounded-xl h-full flex flex-col overflow-hidden">
             <div className="p-4 sm:p-6 border-b bg-muted/10">
               <h3 className="text-lg font-bold flex items-center">
                 <Activity size={20} className="mr-2 text-primary" />
-                Temporal Auditing Sequence
+                Asset History
               </h3>
             </div>
 
-            <div className="p-4 sm:p-6 flex-1 bg-gradient-to-b from-card to-muted/20">
+            <div className="p-4 sm:p-6 flex-1 bg-gradient-to-b from-card to-muted/20 overflow-y-auto custom-scrollbar">
               {!isConsumable ? (
                 <div className="space-y-6">
                   {!asset.movements || asset.movements.length === 0 ? (

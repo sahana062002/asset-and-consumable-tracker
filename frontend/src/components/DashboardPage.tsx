@@ -146,7 +146,7 @@ export default function DashboardPageUI({
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
       <div>
         <h2 className="text-3xl font-bold tracking-tight mb-2">
-          Central Telemetry Dashboard
+          Dashboard
         </h2>
         <p className="text-muted-foreground text-sm">
           Real-time macro visualization of tracking network topological

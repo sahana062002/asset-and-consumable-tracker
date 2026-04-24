@@ -64,7 +64,7 @@ export default function UserAssetDetailsPageUI({
         <h2 className="text-2xl font-bold tracking-tight text-foreground">Target Undetected</h2>
         <p className="text-muted-foreground mt-2 mb-6">Database scan returned negative for identifier {assetCode}</p>
         <Button size="lg" className="shadow-lg hover:scale-105 transition-transform" onClick={() => onNavigate(basePath)}>
-          <ArrowLeft className="mr-2" /> Re-engage Scanner
+          <ArrowLeft className="mr-2" /> Back
         </Button>
       </div>
     );

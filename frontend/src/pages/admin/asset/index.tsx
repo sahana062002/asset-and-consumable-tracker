@@ -126,6 +126,7 @@ export default function AssetsPageContainer() {
 
   const closeDialog = () => {
     setDialogOpen(false);
+    setSuccessAsset(null);
   };
 
   return (

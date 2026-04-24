@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Controller } from "react-hook-form";
 import { barcodeUtils } from "../../lib/barcode";
+import { ROUTES } from "../../constants/routes";
 
 interface AssetsPageUIProps {
   // Data
@@ -131,7 +132,7 @@ function SuccessDialog({ asset, onClose, onReset }: any) {
           </Button>
           <Button
             className="w-full mt-2 sm:col-span-1 border border-border"
-            onClick={() => navigate(`/dashboard/assets/${asset.id}`)}
+            onClick={() => navigate(ROUTES.ASSET_DETAILS(asset.id))}
           >
             <Eye size={16} className="mr-2" /> Open Detail
           </Button>
@@ -176,7 +177,7 @@ export default function AssetsPageUI({
 }: AssetsPageUIProps) {
   const columns = [
     {
-      header: "Tracking Barcode",
+      header: "Barcode",
       accessor: (row: any) => (
         <span className="font-mono text-xs px-2 py-1 bg-muted rounded border border-border/50 shadow-sm">
           {row.assetCode}
@@ -184,7 +185,7 @@ export default function AssetsPageUI({
       ),
     },
     {
-      header: "Identity",
+      header: "Asset Name",
       accessor: "name" as keyof any,
     },
     {
@@ -196,7 +197,7 @@ export default function AssetsPageUI({
       accessor: (row: any) => <StatusBadge status={row.status} />,
     },
     {
-      header: "Node Coordinate",
+      header: "Location",
       accessor: (row: any) => (
         <span
           className="text-sm text-muted-foreground block truncate max-w-[200px]"
@@ -207,7 +208,7 @@ export default function AssetsPageUI({
       ),
     },
     {
-      header: "Payload",
+      header: "Quantity",
       accessor: (row: any) => {
         if (row.type !== "consumable")
           return <span className="text-muted-foreground italic">—</span>;
@@ -263,7 +264,7 @@ export default function AssetsPageUI({
   return (
     <>
       <PageHeader
-        title="Physical Node Arsenal"
+        title="Assets Management"
         subtitle="Manage globally deployed infrastructure equipment dynamically using secure barcodes."
         action={
           <Button
@@ -279,7 +280,7 @@ export default function AssetsPageUI({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">
-              Scan Target
+              Search Asset
             </Label>
             <Input
               placeholder="Search identifiers..."
@@ -290,31 +291,31 @@ export default function AssetsPageUI({
           </div>
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">
-              Deployment Module
+              Asset Type
             </Label>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger className="h-9 w-full bg-background">
                 <SelectValue placeholder="Select Module" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Universal View Focus</SelectItem>
-                <SelectItem value="fixed">Fixed Installations</SelectItem>
-                <SelectItem value="consumable">Liquid / Consumables</SelectItem>
+                <SelectItem value="all">All Types</SelectItem>
+                <SelectItem value="fixed">Fixed Assets</SelectItem>
+                <SelectItem value="consumable">Consumables</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">
-              Signal Integrity
+              Asset Status
             </Label>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="h-9 w-full bg-background">
                 <SelectValue placeholder="Select Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Broad Spectrum</SelectItem>
-                <SelectItem value="active">Active Operations (Live)</SelectItem>
-                <SelectItem value="disposed">Disposed Nodes (Dead)</SelectItem>
+                <SelectItem value="all">All Statuses</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="disposed">Disposed</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -334,7 +335,7 @@ export default function AssetsPageUI({
           >
             <div className="p-6 border-b bg-muted/10">
               <h2 className="text-2xl font-bold tracking-tight">
-                Construct Entry
+                Add Details
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
                 Bind a new physical component strictly to a local map.
