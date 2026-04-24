@@ -220,39 +220,56 @@ export default function LocationsPageUI({
     {
       header: "Actions",
       accessor: (row: any) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <MoreVertical size={16} />
+        <div className="flex items-center space-x-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0"
+            onClick={() => onView(row.id)}
+            title="View Details"
+          >
+            <Eye size={14} className="text-muted-foreground hover:text-foreground" />
+          </Button>
+          
+          {row.level !== 'shelf' && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8 p-0"
+              onClick={() => openAddChild(row)}
+              title="Add Sub-area"
+            >
+              <Plus size={14} className="text-muted-foreground hover:text-foreground" />
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
-            <DropdownMenuItem onClick={() => onView(row.id)}>
-              <Eye size={14} className="mr-2" /> View Details
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => openEdit(row)}>
-              <Edit size={14} className="mr-2" /> Edit Location
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => openAddChild(row)}>
-              <Plus size={14} className="mr-2" /> Add Sub-area
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <ConfirmDialog
-              title="Delete Location"
-              description={`Are you sure you want to delete this location?`}
-              onConfirm={() => onDelete(row.id)}
-              variant="destructive"
-              trigger={
-                <DropdownMenuItem 
-                  className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-                  onSelect={(e) => e.preventDefault()}
-                >
-                  <Trash2 size={14} className="mr-2" /> Delete
-                </DropdownMenuItem>
-              }
-            />
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0"
+            onClick={() => openEdit(row)}
+            title="Edit Location"
+          >
+            <Edit size={14} className="text-muted-foreground hover:text-foreground" />
+          </Button>
+
+          <ConfirmDialog
+            title="Delete Location"
+            description={`Are you sure you want to delete this location?`}
+            onConfirm={() => onDelete(row.id)}
+            variant="destructive"
+            trigger={
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 hover:bg-destructive/10 text-destructive"
+                title="Delete Location"
+              >
+                <Trash2 size={14} />
+              </Button>
+            }
+          />
+        </div>
       ),
     },
   ];
@@ -275,13 +292,13 @@ export default function LocationsPageUI({
           onClick={() => setView("tree")}
           className={`px-4 py-2 font-medium text-sm transition-colors border-b-2 ${view === "tree" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
         >
-          Interactive Tree
+          Tree View
         </button>
         <button
           onClick={() => setView("flat")}
           className={`px-4 py-2 font-medium text-sm transition-colors border-b-2 ${view === "flat" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"}`}
         >
-          Flat Browser
+          List View
         </button>
       </div>
 
@@ -360,7 +377,7 @@ export default function LocationsPageUI({
                 </div>
 
                 <div className="space-y-2">
-                  <Label className={isAddingChild ? "opacity-50" : ""}>Security / Hierarchy Level</Label>
+                  <Label className={isAddingChild ? "opacity-50" : ""}>Location Level</Label>
                   <Controller
                     name="level"
                     control={control}
@@ -387,7 +404,7 @@ export default function LocationsPageUI({
 
                 {selectedLevel !== "campus" && (
                   <div className="space-y-2">
-                    <Label className={isAddingChild ? "opacity-50" : ""}>Master Parent Map</Label>
+                    <Label className={isAddingChild ? "opacity-50" : ""}>Parent Location</Label>
                     <Controller
                       name="parentId"
                       control={control}
