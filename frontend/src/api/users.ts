@@ -8,4 +8,5 @@ export const usersApi = {
   resetPassword: (id: number, data: any) => api.put(`/users/${id}/reset-password`, data).then(res => res.data),
   changePassword: (data: any) => api.post('/users/change-password', data).then(res => res.data),
   remove: (id: number) => api.delete(`/users/${id}`).then(res => res.data),
+  getActivity: (id: number | string) => api.get(`/users/${id}/activity`).then(res => res.data),
 };

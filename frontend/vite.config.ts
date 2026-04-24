@@ -12,17 +12,23 @@ export default defineConfig({
       manifest: {
         name: 'Asset Tracker',
         short_name: 'AssetTrack',
+        description: 'Professional Asset and Consumable Tracking System',
         theme_color: '#0f172a',
+        background_color: '#ffffff',
+        display: 'standalone',
+        start_url: '/',
         icons: [
           {
-            src: '/icons/icon-192x192.png',
+            src: '/android-chrome-192x192.png',
             sizes: '192x192',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           },
           {
-            src: '/icons/icon-512x512.png',
+            src: '/android-chrome-512x512.png',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/png',
+            purpose: 'any maskable'
           }
         ]
       }

@@ -9,16 +9,21 @@ export default function UserDetailsPageContainer() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [userData, setUserData] = useState<any>(null);
+  const [activity, setActivity] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchUser = useCallback(async () => {
     if (!id) return;
     try {
       setIsLoading(true);
-      const response = await usersApi.getOne(id);
-      setUserData(response.data);
+      const [userRes, activityRes] = await Promise.all([
+        usersApi.getOne(id),
+        usersApi.getActivity(id)
+      ]);
+      setUserData(userRes.data);
+      setActivity(activityRes.data);
     } catch (err: any) {
-      console.error("Error fetching user:", err);
+      console.error("Error fetching user data:", err);
     } finally {
       setIsLoading(false);
     }
@@ -33,6 +38,7 @@ export default function UserDetailsPageContainer() {
   return (
     <UserDetailsPageUI
       userData={userData}
+      activity={activity}
       isLoading={isLoading}
       onNavigateBack={() => navigate(ROUTES.USERS)}
     />
