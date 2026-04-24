@@ -1,73 +1,79 @@
-# System Architecture Document
-## Project: Asset & Consumable Tracker
+# Architecture Document — Asset Tracker PWA
 
-### 1. High-Level Architecture
-The system follows a **Monorepo Architecture** with a clear separation between the **Client-Side (PWA)** and **Server-Side (REST API)**.
+## Overview
+Two-service architecture: a React PWA frontend and an Express.js REST API backend, communicating over HTTP with JSON. Data is stored in MySQL accessed via Drizzle ORM. Authentication is stateless using JWT.
 
+## Architecture Diagram
 ```mermaid
 graph TD
-    subgraph Client [Frontend PWA]
-        UI[React/Vite UI]
-        Store[Zustand Auth Store]
-        Query[TanStack Query]
-        Scanner[Html5Qrcode Scanner]
+    subgraph Client [Browser / Mobile — React PWA]
+        UI[React + Vite]
+        State[Zustand + TanStack Query]
+        Scanner[html5-qrcode]
     end
 
-    subgraph Server [Backend REST API]
-        Middleware[Auth/Security Middleware]
-        Services[Business Logic Services]
-        Validators[Zod Validation]
+    subgraph Server [Express.js API — Node.js]
+        Auth[JWT Middleware]
+        Validation[Zod Schemas]
+        Drizzle[Drizzle ORM]
     end
 
-    subgraph Persistence [Database Layer]
-        MySQL[(MySQL DB)]
-        Drizzle[[Drizzle ORM]]
+    subgraph Storage
+        MySQL[(MySQL Database)]
+        FS[/uploads — File System/]
     end
 
-    UI <--> Middleware
-    Middleware <--> Services
-    Services <--> Drizzle
-    Drizzle <--> MySQL
+    UI -- HTTPS + JWT --> Auth
+    Auth --> Validation
+    Validation --> Drizzle
+    Drizzle --> MySQL
+    Drizzle -- Disposal Images --> FS
 ```
 
-### 2. Technology Stack
-- **Frontend**: 
-    - Framework: React (TypeScript)
-    - Build Tool: Vite
-    - Styling: Tailwind CSS
-    - PWA: `vite-plugin-pwa`
-    - State Management: Zustand
-    - Data Fetching: TanStack Query (React Query)
-- **Backend**:
-    - Runtime: Node.js
-    - Framework: Express.js (TypeScript)
-    - Security: Helmet, CORS, JWT
-    - Validation: Zod
-- **Database**:
-    - Engine: MySQL
-    - ORM: Drizzle ORM (Type-safe SQL)
+## Frontend
+- **Framework**: React + TypeScript, bundled with Vite
+- **Styling**: Tailwind CSS + shadcn/ui
+- **State**: Zustand (auth), TanStack Query (server data)
+- **Routing**: React Router v6 with role-based route guards
+- **PWA**: `vite-plugin-pwa` + Workbox service worker (NetworkFirst for API, CacheFirst for assets)
+- **Barcode Scan**: `html5-qrcode` via custom `useQRScanner` hook
+- **Barcode Generate**: `JsBarcode` rendered as SVG with PNG download and print support
+- **API**: Single Axios instance with JWT request interceptor and 401 auto-logout
 
-### 3. Key Technical Workflows
+## Backend
+- **Server**: Express.js + TypeScript
+- **Database**: MySQL + Drizzle ORM (schema-as-code, migration support)
+- **Auth**: JWT — signed on login, verified via middleware on every request
+- **Validation**: Zod schemas on all request bodies
+- **Passwords**: bcrypt with work factor 12
+- **File Uploads**: Multer — images only, 5MB max, stored in `/uploads/disposals/`
+- **Pattern**: Thin route controllers → service layer → Drizzle queries
 
-#### 3.1 Authentication Flow
-1. User submits credentials via `LoginPage`.
-2. Backend validates with `bcryptjs` and returns a JWT.
-3. `authStore` persists JWT in `localStorage`.
-4. All subsequent API calls include the Bearer Token in headers.
+## Database Tables
+| Table | Purpose |
+| :--- | :--- |
+| **users** | Accounts with role (admin / user) |
+| **locations** | Self-referential hierarchy (campus → shelf) |
+| **assets** | Fixed and consumable assets with current state |
+| **asset_movements** | Immutable audit log of location changes |
+| **asset_usages** | Immutable audit log of quantity changes |
 
-#### 3.2 Asset Lifecycle & State Machine
-- **Active State**: Eligible for scanning, translocation, and consumption.
-- **Disposed State**: Triggered manually by Admin or automatically via `updateUsage` when quantity hits 0.
-- **Scanning Block**: The `AssetService` intercepts scan requests for disposed assets and returns a 404, preventing interaction with decommissioned items.
+## Roles & Access
+| Layer | Admin | User |
+| :--- | :--- | :--- |
+| **All asset APIs** | Yes | No |
+| **Scan lookup** | Yes | Yes |
+| **Update location / usage** | Yes | Yes |
+| **Users / Locations APIs** | Yes | No |
 
-#### 3.3 Git Workflow & Quality Gates
-- **Husky Hooks**:
-    - `pre-commit`: Runs `lint-staged` which triggers project-wide `tsc` (backend) and `eslint` (frontend).
-    - `pre-push`: Runs a full production build to ensure no regression.
+## Key Design Decisions
+- **Audit tables** (movements, usages) are append-only — never updated or deleted.
+- **Current asset state** (location, quantity) stored directly on the asset row for fast reads.
+- **JWT is stateless** — no server-side session storage.
+- **All env vars validated** at startup with Zod — server refuses to start if config is incomplete.
 
-### 4. Data Model
-- **`assets`**: Core metadata, type differentiation (fixed/consumable), and current status.
-- **`asset_movements`**: Immutable log of location changes.
-- **`asset_usages`**: Granular tracking of volumetric consumption for consumables.
-- **`users`**: RBAC-enabled user accounts.
-- **`system_logs`**: (Logical) Aggregate view of movements and usages for the Activity Stream.
+## Dev Setup (Quick Reference)
+- **Frontend** → http://localhost:5173
+- **Backend** → http://localhost:3000
+- **Database** → MySQL (local)
+- **Run** → `npm run dev` (from monorepo root)

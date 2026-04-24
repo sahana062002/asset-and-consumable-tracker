@@ -149,8 +149,7 @@ export default function DashboardPageUI({
           Dashboard
         </h2>
         <p className="text-muted-foreground text-sm">
-          Real-time macro visualization of tracking network topological
-          distributions.
+          Overview and real-time tracking of all assets and locations.
         </p>
       </div>
 
@@ -158,7 +157,7 @@ export default function DashboardPageUI({
         <Card className="shadow-sm border-l-4 border-l-primary hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium uppercase tracking-wider">
-              Gross Fleet Node Count
+              Total Assets
             </CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -167,7 +166,7 @@ export default function DashboardPageUI({
               {stats.totalAssets}
             </div>
             <p className="text-xs text-muted-foreground mt-1 font-semibold">
-              Total indexed system artifacts
+              Total assets in system
             </p>
           </CardContent>
         </Card>
@@ -175,7 +174,7 @@ export default function DashboardPageUI({
         <Card className="shadow-sm border-l-4 border-l-blue-500 hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium uppercase tracking-wider">
-              Fixed Physical Nodes
+              Fixed Assets
             </CardTitle>
             <Box className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -184,7 +183,7 @@ export default function DashboardPageUI({
               {stats.activeFixed}
             </div>
             <p className="text-xs text-muted-foreground mt-1 font-semibold">
-              Active operational status
+              Active fixed assets
             </p>
           </CardContent>
         </Card>
@@ -192,7 +191,7 @@ export default function DashboardPageUI({
         <Card className="shadow-sm border-l-4 border-l-orange-500 hover:shadow-md transition-shadow">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium uppercase tracking-wider">
-              Fluid Consumables
+              Consumables
             </CardTitle>
             <DatabaseZap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -201,7 +200,7 @@ export default function DashboardPageUI({
               {stats.activeConsumable}
             </div>
             <p className="text-xs text-muted-foreground mt-1 font-semibold">
-              Active volume modules
+              Active consumables
             </p>
           </CardContent>
         </Card>
@@ -209,7 +208,7 @@ export default function DashboardPageUI({
         <Card className="shadow-sm border-l-4 border-l-destructive hover:shadow-md transition-shadow bg-destructive/5 text-destructive">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium uppercase tracking-wider text-destructive">
-              Severed Nodes
+              Disposed Assets
             </CardTitle>
             <ShieldAlert className="h-4 w-4 text-destructive opacity-70" />
           </CardHeader>
@@ -218,7 +217,7 @@ export default function DashboardPageUI({
               {stats.disposedAssets}
             </div>
             <p className="text-xs opacity-80 mt-1 font-semibold">
-              Disposed or fully consumed
+              Permanently removed
             </p>
           </CardContent>
         </Card>
@@ -229,11 +228,10 @@ export default function DashboardPageUI({
         <Card className="lg:col-span-1 shadow-sm border border-border h-[600px] flex flex-col overflow-hidden">
           <CardHeader className="bg-muted/30 border-b pb-4 shrink-0">
             <CardTitle className="flex items-center text-md font-bold">
-              <Layers size={18} className="mr-2 text-primary" /> Mapping
-              Hierarchy
+              Locations
             </CardTitle>
             <CardDescription className="text-xs font-semibold mt-1">
-              Recursively select coordinate zones to isolate tracking matrices.
+              Filter by location to see specific assets.
             </CardDescription>
             {selectedLocationIds.length > 0 && (
               <Button
@@ -273,18 +271,17 @@ export default function DashboardPageUI({
           <CardHeader className="bg-muted/10 border-b pb-4 shrink-0 flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-lg flex items-center font-bold">
-                <Cpu size={20} className="mr-2 text-primary" /> Active Sensor
-                Matrix
+                <Cpu size={20} className="mr-2 text-primary" /> Active Assets
               </CardTitle>
               <CardDescription className="font-semibold text-xs mt-1">
                 {selectedLocationIds.length === 0
-                  ? "Displaying global infrastructure layout."
-                  : "Matrix successfully filtered to selected topologies."}
+                  ? "Overview of your current assets."
+                  : "Assets filtered to selected locations."}
               </CardDescription>
             </div>
             <div className="text-right">
               <Badge variant="outline" className="font-mono text-sm shadow-sm">
-                {visibleAssets.length} Arrays Active
+                {visibleAssets.length} Assets Active
               </Badge>
             </div>
           </CardHeader>
@@ -308,8 +305,7 @@ export default function DashboardPageUI({
                 {visibleAssets.map((asset: any) => (
                   <div
                     key={asset.id}
-                    onClick={() => onNavigate(`/dashboard/assets/${asset.id}`)}
-                    className="group bg-card shadow-sm border border-border/60 hover:border-primary/50 rounded-xl p-5 cursor-pointer hover:shadow-lg transition-all flex flex-col justify-between hover:bg-muted/5 relative overflow-hidden"
+                    className="group bg-card shadow-sm border border-border/60 rounded-xl p-5 hover:shadow-lg transition-all flex flex-col justify-between relative overflow-hidden"
                   >
                     <div
                       className={`absolute top-0 left-0 w-1 h-full transition-colors ${asset.status === "disposed" ? "bg-destructive" : "bg-primary"}`}
@@ -349,7 +345,7 @@ export default function DashboardPageUI({
                       {asset.type === "consumable" && asset.initialQuantity && (
                         <div>
                           <div className="flex justify-between items-center mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                            <span>Volumetric Flow</span>
+                            <span>Quantity</span>
                             <span>
                               {asset.quantity}/{asset.initialQuantity}
                             </span>

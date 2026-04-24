@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { StatusBadge } from "../ui/StatusBadge";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,8 @@ import {
   Activity,
   AlertTriangle,
   Trash2,
+  Image as ImageIcon,
+  X,
 } from "lucide-react";
 import { barcodeUtils } from "../../lib/barcode";
 
@@ -34,6 +36,7 @@ export default function AssetDetailsPageUI({
 }: AssetDetailsPageUIProps) {
   const navigate = useNavigate();
   const svgRef = useRef<SVGSVGElement>(null);
+  const [showPhotoPopup, setShowPhotoPopup] = useState(false);
 
   useEffect(() => {
     if (asset && svgRef.current) {
@@ -60,6 +63,10 @@ export default function AssetDetailsPageUI({
           Math.min(100, (asset.quantity / asset.initialQuantity) * 100),
         )
       : 0;
+
+  const photoUrl = asset.disposalPhotoUrl 
+    ? `${import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:3000"}${asset.disposalPhotoUrl}`
+    : null;
 
   return (
     <>
@@ -135,7 +142,7 @@ export default function AssetDetailsPageUI({
                   />
                   <div>
                     <p className="text-xs uppercase text-muted-foreground font-bold tracking-wider mb-1">
-                      Local Coordinates
+                      Current Location
                     </p>
                     <p className="text-sm font-medium leading-relaxed bg-muted/40 p-2 rounded border border-border/50">
                       {asset.locationPath}
@@ -151,7 +158,7 @@ export default function AssetDetailsPageUI({
                     />
                     <div className="w-full">
                       <p className="text-xs uppercase text-muted-foreground font-bold tracking-wider mb-1">
-                        Volumetric Integrity
+                        Quantity Status
                       </p>
                       <div className="flex justify-between items-end mb-1 mt-2">
                         <span className="text-sm font-bold text-foreground">
@@ -171,47 +178,36 @@ export default function AssetDetailsPageUI({
                   </div>
                 )}
 
-              </div>
-            </div>
-          </div>
-
-          {asset.status === "disposed" && (
-            <div className="bg-destructive/10 border-2 border-destructive/20 rounded-xl p-5 relative overflow-hidden group hover:border-destructive/40 transition-colors">
-              <AlertTriangle className="absolute -right-4 -top-4 w-24 h-24 text-destructive/5 group-hover:scale-110 transition-transform" />
-              <h3 className="font-bold text-destructive mb-3 relative z-10 flex items-center">
-                <Trash2 size={18} className="mr-2" /> Sub-System Severed
-                Component
-              </h3>
-              <div className="space-y-2 relative z-10">
-                <p className="text-sm">
-                  <strong>Deactivated At:</strong>{" "}
-                  {new Date(asset.disposedAt).toLocaleString()}
-                </p>
-                <p className="text-sm">
-                  <strong>Archived By Operator:</strong> {asset.disposedByName}
-                </p>
-                {asset.disposalPhotoUrl && (
-                  <div className="mt-4 pt-4 border-t border-destructive/20">
-                    <p className="text-xs font-semibold uppercase mb-2 text-destructive">
-                      Termination Signature Target Image
-                    </p>
-                    <a
-                      href={`${import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:3000"}${asset.disposalPhotoUrl}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block max-w-full rounded shadow-md border hover:opacity-90 transition-opacity"
-                    >
-                      <img
-                        src={`${import.meta.env.VITE_API_URL?.replace("/api", "") || "http://localhost:3000"}${asset.disposalPhotoUrl}`}
-                        alt="Disposal Log"
-                        className="w-full h-auto rounded"
-                      />
-                    </a>
+                {asset.status === "disposed" && (
+                  <div className="mt-6 pt-6 border-t border-destructive/20 space-y-3 bg-destructive/5 -mx-6 px-6 pb-6 rounded-b-xl">
+                    <div className="flex items-center text-destructive font-bold text-sm mb-1">
+                      <Trash2 size={16} className="mr-2" /> Disposed Asset
+                    </div>
+                    <div className="space-y-1.5">
+                      <p className="text-sm">
+                        <span className="text-muted-foreground font-medium">Removed On:</span>{" "}
+                        <span className="font-semibold">{new Date(asset.disposedAt).toLocaleString()}</span>
+                      </p>
+                      <p className="text-sm">
+                        <span className="text-muted-foreground font-medium">Removed By:</span>{" "}
+                        <span className="font-semibold">{asset.disposedByName}</span>
+                      </p>
+                    </div>
+                    {photoUrl && (
+                      <Button
+                        variant="outline"
+                        className="w-full mt-2 text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
+                        onClick={() => setShowPhotoPopup(true)}
+                      >
+                        <ImageIcon size={16} className="mr-2" /> View Disposal Photo
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
             </div>
-          )}
+          </div>
+
         </div>
 
         {/* Temporal Logs */}
@@ -230,21 +226,15 @@ export default function AssetDetailsPageUI({
                   {!asset.movements || asset.movements.length === 0 ? (
                     <div className="py-12 text-center text-muted-foreground flex flex-col items-center">
                       <HardDrive size={32} className="mb-4 opacity-50" />
-                      <p className="font-semibold text-lg">
-                        Immutable Stasis Lock
-                      </p>
+                      <p className="font-semibold text-lg">No History Found</p>
                       <p className="text-sm max-w-[280px] mt-2">
-                        Zero coordinate shifts recorded. Unit locked perfectly
-                        to original deployment bay.
+                        This asset hasn't been moved yet.
                       </p>
                     </div>
                   ) : (
                     <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-8 before:w-0.5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:bg-border/60">
                       {asset.movements.map((move: any) => (
-                        <div
-                          key={move.id}
-                          className="relative flex items-start group"
-                        >
+                        <div key={move.id} className="relative flex items-start group">
                           <div className="absolute left-[-24px] rounded-full bg-primary/20 p-1.5 border-4 border-card group-hover:scale-110 group-hover:bg-primary transition-all">
                             <div className="w-2 h-2 rounded-full bg-primary" />
                           </div>
@@ -259,17 +249,10 @@ export default function AssetDetailsPageUI({
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center mt-4">
                               <div className="col-span-2 p-3 bg-muted/40 rounded border text-sm font-medium word-break border-dashed">
-                                {move.fromLocationPath || (
-                                  <span className="italic text-muted-foreground">
-                                    Original Deployment Origin Void
-                                  </span>
-                                )}
+                                {move.fromLocationPath || <span className="italic text-muted-foreground">Initial Location</span>}
                               </div>
                               <div className="hidden md:flex justify-center text-muted-foreground col-span-1">
-                                <ArrowLeft
-                                  size={20}
-                                  className="rotate-180 text-primary animate-pulse"
-                                />
+                                <ArrowLeft size={20} className="rotate-180 text-primary animate-pulse" />
                               </div>
                               <div className="col-span-2 p-3 bg-primary/5 rounded border border-primary/20 text-sm font-semibold text-primary word-break">
                                 {move.toLocationPath}
@@ -277,10 +260,7 @@ export default function AssetDetailsPageUI({
                             </div>
                             {move.notes && (
                               <div className="mt-4 p-3 bg-muted/30 text-sm rounded border-l-2 border-l-primary/40 text-muted-foreground flex items-start">
-                                <FileText
-                                  size={14}
-                                  className="mr-2 shrink-0 mt-0.5"
-                                />
+                                <FileText size={14} className="mr-2 shrink-0 mt-0.5" />
                                 <p className="italic">{move.notes}</p>
                               </div>
                             )}
@@ -295,12 +275,9 @@ export default function AssetDetailsPageUI({
                   {!asset.usages || asset.usages.length === 0 ? (
                     <div className="py-16 text-center text-muted-foreground flex flex-col items-center">
                       <Package size={32} className="mb-4 opacity-50" />
-                      <p className="font-semibold text-lg">
-                        Pristine Component Integrity
-                      </p>
+                      <p className="font-semibold text-lg">No History Found</p>
                       <p className="text-sm max-w-[280px] mt-2">
-                        Resource allocation completely untouched. Subsystem
-                        retains maximum base capacity.
+                        No usage has been recorded for this asset yet.
                       </p>
                     </div>
                   ) : (
@@ -308,29 +285,21 @@ export default function AssetDetailsPageUI({
                       <table className="w-full text-sm text-left">
                         <thead className="bg-muted/40 border-b font-medium text-xs tracking-widest text-muted-foreground uppercase">
                           <tr>
-                            <th className="px-4 py-3">Timestamp Stamp</th>
-                            <th className="px-4 py-3">Delta Payload</th>
-                            <th className="px-4 py-3 text-center">
-                              Offset Metric
-                            </th>
-                            <th className="px-4 py-3">Engineer Trace</th>
+                            <th className="px-4 py-3">Date & Time</th>
+                            <th className="px-4 py-3">Used Amount</th>
+                            <th className="px-4 py-3 text-center">Level Change</th>
+                            <th className="px-4 py-3">Updated By</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
                           {asset.usages.map((use: any) => (
-                            <tr
-                              key={use.id}
-                              className="hover:bg-muted/20 transition-colors"
-                            >
+                            <tr key={use.id} className="hover:bg-muted/20 transition-colors">
                               <td className="px-4 py-3 font-semibold text-xs whitespace-nowrap">
                                 {new Date(use.usedAt).toLocaleString()}
                               </td>
                               <td className="px-4 py-3">
                                 <div className="flex items-center space-x-2">
-                                  <Badge
-                                    variant="destructive"
-                                    className="font-mono text-xs font-bold leading-none py-1 h-auto px-2 border-red-500/30"
-                                  >
+                                  <Badge variant="destructive" className="font-mono text-xs font-bold leading-none py-1 h-auto px-2 border-red-500/30">
                                     -{use.quantityUsed}
                                   </Badge>
                                 </div>
@@ -339,20 +308,12 @@ export default function AssetDetailsPageUI({
                                 <div className="inline-flex items-center space-x-2 bg-muted/60 p-1.5 rounded-md border font-mono text-xs">
                                   <span>{use.quantityBefore}</span>
                                   <ArrowLeft size={10} className="rotate-180" />
-                                  <span
-                                    className={
-                                      use.quantityAfter === 0
-                                        ? "text-destructive font-black"
-                                        : "text-emerald-600 font-bold"
-                                    }
-                                  >
+                                  <span className={use.quantityAfter === 0 ? "text-destructive font-black" : "text-emerald-600 font-bold"}>
                                     {use.quantityAfter}
                                   </span>
                                 </div>
                               </td>
-                              <td className="px-4 py-3 font-medium whitespace-nowrap">
-                                {use.updatedByName}
-                              </td>
+                              <td className="px-4 py-3 font-medium whitespace-nowrap">{use.updatedByName}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -365,6 +326,28 @@ export default function AssetDetailsPageUI({
           </div>
         </div>
       </div>
+
+      {showPhotoPopup && photoUrl && (
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 animate-in fade-in duration-200 p-4 cursor-zoom-out"
+          onClick={() => setShowPhotoPopup(false)}
+        >
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute top-6 right-6 text-white hover:bg-white/20 z-[110]"
+            onClick={() => setShowPhotoPopup(false)}
+          >
+            <X size={28} />
+          </Button>
+          <img 
+            src={photoUrl || undefined} 
+            alt="Asset" 
+            className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-200"
+            onClick={e => e.stopPropagation()}
+          />
+        </div>
+      )}
     </>
   );
 }

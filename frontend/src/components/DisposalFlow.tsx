@@ -3,6 +3,7 @@ import { Camera, CheckCircle2, UploadCloud, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { assetsApi } from '../api/assets';
 
+
 interface DisposalFlowProps {
   assetId: number;
   assetName: string;
@@ -44,7 +45,7 @@ export function DisposalFlow({ assetId, assetName, onSuccess, onCancel }: Dispos
 
   if (step === 1) {
     return (
-      <div className="bg-card rounded-2xl shadow-xl border border-destructive overflow-hidden animate-in fade-in zoom-in-95">
+      <div className="bg-card rounded-2xl shadow-xl border border-destructive overflow-hidden animate-in fade-in zoom-in-95 max-w-sm mx-auto">
         <div className="px-6 py-8 text-center bg-destructive/10 border-b border-destructive/20 relative">
           <button onClick={onCancel} className="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
             <X size={20} />
@@ -52,9 +53,9 @@ export function DisposalFlow({ assetId, assetName, onSuccess, onCancel }: Dispos
           <div className="w-16 h-16 bg-destructive/20 rounded-full flex items-center justify-center mx-auto mb-4">
              <Camera className="w-8 h-8 text-destructive" />
           </div>
-          <h2 className="text-2xl font-bold text-destructive">Component Exhausted</h2>
+          <h2 className="text-2xl font-bold text-destructive">Empty Item</h2>
           <p className="text-sm text-muted-foreground font-medium max-w-[260px] mx-auto mt-2">
-            This module has reached zero volume. Photographic evidence of the terminal state must be secured before logging final closure.
+            Please take a photo of the empty item to confirm it's finished.
           </p>
         </div>
         <div className="p-6 text-center">
@@ -67,9 +68,9 @@ export function DisposalFlow({ assetId, assetName, onSuccess, onCancel }: Dispos
             onChange={handleCapture} 
           />
           <Button size="lg" className="w-full text-md h-14 font-bold shadow-lg" onClick={() => fileInputRef.current?.click()}>
-             <Camera className="mr-2" /> Capture Evidence Log
+             <Camera className="mr-2" /> Take Photo
           </Button>
-          <Button variant="ghost" className="w-full mt-3" onClick={onCancel}>Bypass Sequence</Button>
+          <Button variant="ghost" className="w-full mt-3" onClick={onCancel}>Cancel</Button>
         </div>
       </div>
     );
@@ -77,11 +78,11 @@ export function DisposalFlow({ assetId, assetName, onSuccess, onCancel }: Dispos
 
   if (step === 2) {
     return (
-      <div className="bg-card rounded-2xl shadow-xl border border-border overflow-hidden animate-in fade-in">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="font-bold">Verify Telemetry</h2>
+      <div className="bg-card rounded-2xl shadow-xl border border-border overflow-hidden animate-in fade-in max-w-sm mx-auto">
+        <div className="p-4 border-b flex items-center justify-between w-full">
+          <h2 className="font-bold">Confirm Photo</h2>
           <button onClick={() => fileInputRef.current?.click()} className="text-primary text-sm font-semibold hover:underline">
-            Recalibrate
+            Retake
           </button>
         </div>
         <div className="p-4 flex flex-col items-center bg-black/5">
@@ -98,10 +99,10 @@ export function DisposalFlow({ assetId, assetName, onSuccess, onCancel }: Dispos
         
         {error && <div className="px-4 py-2 bg-destructive/10 text-destructive text-sm font-semibold text-center">{error}</div>}
 
-        <div className="p-6 grid gap-3 sm:grid-cols-2 bg-muted/40 border-t">
-          <Button variant="outline" onClick={onCancel}>Cancel Flow</Button>
+        <div className="p-6 grid gap-3 sm:grid-cols-2 bg-muted/40 border-t w-full">
+          <Button variant="outline" onClick={onCancel}>Cancel</Button>
           <Button onClick={submitDisposal} className="shadow-md font-bold">
-            <UploadCloud className="mr-2" size={18} /> Transmit Payload
+            <UploadCloud className="mr-2" size={18} /> Submit
           </Button>
         </div>
       </div>
@@ -112,8 +113,8 @@ export function DisposalFlow({ assetId, assetName, onSuccess, onCancel }: Dispos
     return (
       <div className="bg-card rounded-2xl shadow-xl border border-border overflow-hidden p-12 flex flex-col items-center justify-center animate-in fade-in">
         <Loader2 size={48} className="animate-spin text-primary mb-4" />
-        <h2 className="text-xl font-bold">Encrypting Payload...</h2>
-        <p className="text-muted-foreground text-sm mt-2 text-center">Awaiting central server confirmation block.</p>
+        <h2 className="text-xl font-bold">Saving...</h2>
+        <p className="text-muted-foreground text-sm mt-2 text-center">Please wait while we record the status.</p>
       </div>
     );
   }
@@ -123,12 +124,12 @@ export function DisposalFlow({ assetId, assetName, onSuccess, onCancel }: Dispos
       <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner dark:bg-emerald-900">
          <CheckCircle2 size={40} className="text-emerald-600 dark:text-emerald-400" />
       </div>
-      <h2 className="text-2xl font-bold text-emerald-800 dark:text-emerald-300">Terminal State Verified</h2>
+      <h2 className="text-2xl font-bold text-emerald-800 dark:text-emerald-300">Item Disposed</h2>
       <p className="text-emerald-600 dark:text-emerald-400/80 font-medium mt-2 mb-6">
-        {assetName} has been fully decommissioned successfully.
+        {assetName} has been recorded as finished.
       </p>
       <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg h-12 text-md font-bold" onClick={onSuccess}>
-        Scan Next Artifact
+        Done
       </Button>
     </div>
   );

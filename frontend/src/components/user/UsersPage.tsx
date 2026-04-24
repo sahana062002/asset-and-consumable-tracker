@@ -76,7 +76,7 @@ export default function UsersPageUI({
 }: UsersPageUIProps) {
   const columns = [
     {
-      header: "Identity",
+      header: "User",
       accessor: (row: any) => (
         <div className="flex flex-col">
           <span className="font-semibold">{row.name}</span>
@@ -85,7 +85,7 @@ export default function UsersPageUI({
       ),
     },
     {
-      header: "Clearance Role",
+      header: "Role",
       accessor: (row: any) => (
         <Badge
           variant={row.role === "admin" ? "default" : "secondary"}
@@ -105,7 +105,7 @@ export default function UsersPageUI({
       ),
     },
     {
-      header: "Account Status",
+      header: "Status",
       accessor: (row: any) => (
         <Badge
           variant="outline"
@@ -120,7 +120,7 @@ export default function UsersPageUI({
       ),
     },
     {
-      header: "Joined Timeline",
+      header: "Joined",
       accessor: (row: any) => (
         <span className="text-sm">
           {new Date(row.createdAt).toLocaleDateString()}
@@ -128,7 +128,7 @@ export default function UsersPageUI({
       ),
     },
     {
-      header: "Access Management",
+      header: "Actions",
       accessor: (row: any) => (
         <div className="flex items-center space-x-1">
           <Button
@@ -192,7 +192,7 @@ export default function UsersPageUI({
             className="shadow-lg hover:shadow-xl transition-all"
           >
             <UserPlus size={18} className="mr-2" />
-            Provision Account
+            Add User
           </Button>
         }
       />
@@ -211,11 +211,11 @@ export default function UsersPageUI({
             <div className="p-6 border-b bg-muted/10">
               <h2 className="text-2xl font-bold tracking-tight">
                 {dialogState === "create"
-                  ? "Provision Identity"
-                  : "Modify Clearance"}
+                  ? "Add New User"
+                  : "Edit User"}
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                Configure parameters safely.
+                Update profile and permissions.
               </p>
             </div>
 
@@ -226,7 +226,7 @@ export default function UsersPageUI({
                 className="space-y-4"
               >
                 <div className="space-y-2">
-                  <Label>Legal Full Name</Label>
+                  <Label>Full Name</Label>
                   <Input {...register("name")} placeholder="John Doe" />
                   {errors.name && (
                     <p className="text-xs text-destructive">
@@ -236,7 +236,7 @@ export default function UsersPageUI({
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Corp Email Address</Label>
+                  <Label>Email Address</Label>
                   <Input
                     {...register("email")}
                     type="email"
@@ -251,7 +251,7 @@ export default function UsersPageUI({
 
                 {dialogState === "create" && (
                   <div className="space-y-2 relative">
-                    <Label>Initial Password Security</Label>
+                    <Label>Password</Label>
                     <div className="relative">
                       <Input
                         {...register("password")}
@@ -275,7 +275,7 @@ export default function UsersPageUI({
                 )}
 
                 <div className="space-y-2">
-                  <Label>System Role Configuration</Label>
+                  <Label>User Role</Label>
                   <Controller
                     name="role"
                     control={control}
@@ -288,8 +288,8 @@ export default function UsersPageUI({
                           <SelectValue placeholder="Select Role" />
                         </SelectTrigger>
                         <SelectContent className="max-w-[calc(100vw-2rem)] sm:max-w-[400px]">
-                          <SelectItem value="user">Floor Employee (User)</SelectItem>
-                          <SelectItem value="admin">System Architect (Admin)</SelectItem>
+                          <SelectItem value="user">User</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
                         </SelectContent>
                       </Select>
                     )}
@@ -310,7 +310,7 @@ export default function UsersPageUI({
                         htmlFor="active"
                         className="font-semibold text-foreground cursor-pointer"
                       >
-                        Account Operating Live
+                        Account Active
                       </Label>
                     </div>
                   )}
@@ -319,7 +319,7 @@ export default function UsersPageUI({
 
             <div className="p-6 bg-muted/40 border-t flex justify-end space-x-3 rounded-b-2xl">
               <Button variant="ghost" onClick={closeDialog} type="button">
-                Escape
+                Cancel
               </Button>
               <Button
                 form="user-form"
@@ -327,7 +327,7 @@ export default function UsersPageUI({
                 disabled={isSubmitting}
                 className="shadow-md font-semibold"
               >
-                Integrate Node
+                Save Changes
               </Button>
             </div>
           </div>

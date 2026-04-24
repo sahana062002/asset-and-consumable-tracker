@@ -88,10 +88,10 @@ function SuccessDialog({ asset, onClose, onReset }: any) {
             <PackageSearch className="text-emerald-600 w-8 h-8" />
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-foreground">
-            Asset Initialized!
+            Asset Created!
           </h2>
           <p className="text-muted-foreground mt-2">
-            Physical code generated and safely loaded.
+            The asset has been added to the system.
           </p>
         </div>
 
@@ -109,7 +109,7 @@ function SuccessDialog({ asset, onClose, onReset }: any) {
             className="w-full flex items-center justify-center"
             onClick={() => barcodeUtils.print(asset.assetCode)}
           >
-            <Printer size={16} className="mr-2" /> Print Map
+            <Printer size={16} className="mr-2" /> Print Barcode
           </Button>
           <Button
             variant="outline"
@@ -245,8 +245,8 @@ export default function AssetsPageUI({
           </button>
           {row.status === "active" && (
             <ConfirmDialog
-              title="Dismantle Asset Entry?"
-              description={`Are you declaring ${row.assetCode} fully offline? Data will securely detach.`}
+              title="Delete Asset?"
+              description={`Are you sure you want to permanently remove ${row.assetCode} from the system?`}
               onConfirm={() => onDelete(row.id)}
               variant="destructive"
               trigger={
@@ -264,14 +264,14 @@ export default function AssetsPageUI({
   return (
     <>
       <PageHeader
-        title="Assets Management"
-        subtitle="Manage globally deployed infrastructure equipment dynamically using secure barcodes."
+        title="Assets"
+        subtitle="Track and manage all items across your organization using barcodes."
         action={
           <Button
             onClick={openCreate}
             className="shadow-lg h-10 hover:scale-105 transition-transform duration-200"
           >
-            <Plus size={18} className="mr-2" /> Generate Asset
+            <Plus size={18} className="mr-2" /> Add Asset
           </Button>
         }
       />
@@ -280,10 +280,10 @@ export default function AssetsPageUI({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1">
             <Label className="text-xs text-muted-foreground uppercase tracking-widest font-semibold">
-              Search Asset
+              Search
             </Label>
             <Input
-              placeholder="Search identifiers..."
+              placeholder="Search by name or code..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-9 focus-visible:ring-primary shadow-inner"
@@ -295,7 +295,7 @@ export default function AssetsPageUI({
             </Label>
             <Select value={typeFilter} onValueChange={setTypeFilter}>
               <SelectTrigger className="h-9 w-full bg-background">
-                <SelectValue placeholder="Select Module" />
+                <SelectValue placeholder="Select Type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Types</SelectItem>
@@ -335,10 +335,10 @@ export default function AssetsPageUI({
           >
             <div className="p-6 border-b bg-muted/10">
               <h2 className="text-2xl font-bold tracking-tight">
-                Add Details
+                Add Asset
               </h2>
               <p className="text-sm text-muted-foreground mt-1">
-                Bind a new physical component strictly to a local map.
+                Register a new asset and assign its location.
               </p>
             </div>
 
@@ -349,7 +349,7 @@ export default function AssetsPageUI({
                 className="space-y-5"
               >
                 <div className="space-y-2">
-                  <Label>Reference Name</Label>
+                  <Label>Asset Name</Label>
                   <Input
                     {...register("name")}
                     placeholder="e.g. Dell Monitor P2419H"
@@ -363,7 +363,7 @@ export default function AssetsPageUI({
                 </div>
 
                 <div className="space-y-2">
-                  <Label>Modality</Label>
+                  <Label>Asset Type</Label>
                   <div className="flex space-x-4 pt-1">
                     <label className="flex items-center space-x-2 cursor-pointer font-medium text-sm border px-3 py-2 rounded-md hover:bg-muted/30 transition-colors">
                       <input
@@ -372,7 +372,7 @@ export default function AssetsPageUI({
                         {...register("type")}
                         className="text-primary w-4 h-4"
                       />
-                      <span>Fixed Structure</span>
+                      <span>Fixed Asset</span>
                     </label>
                     <label className="flex items-center space-x-2 cursor-pointer font-medium text-sm border px-3 py-2 rounded-md hover:bg-muted/30 transition-colors">
                       <input
@@ -381,14 +381,14 @@ export default function AssetsPageUI({
                         {...register("type")}
                         className="text-primary w-4 h-4"
                       />
-                      <span>Liquid / Pack</span>
+                      <span>Consumable</span>
                     </label>
                   </div>
                 </div>
 
                 {selectedType === "consumable" && (
                   <div className="space-y-2 animate-in slide-in-from-top-2">
-                    <Label>Base Volume / Initial Quantity</Label>
+                    <Label>Initial Quantity</Label>
                     <Input
                       type="number"
                       {...register("quantity")}
@@ -413,7 +413,7 @@ export default function AssetsPageUI({
                         defaultValue={field.value?.toString()}
                       >
                         <SelectTrigger className="h-10 w-full bg-background">
-                          <SelectValue placeholder="-- Interface Coordinates --" />
+                          <SelectValue placeholder="Select Location" />
                         </SelectTrigger>
                         <SelectContent className="max-w-[calc(100vw-2rem)] sm:max-w-[400px]">
                           {locations?.map((loc: any) => (
@@ -440,7 +440,7 @@ export default function AssetsPageUI({
 
             <div className="p-6 bg-muted/40 border-t flex justify-end space-x-3 rounded-b-2xl">
               <Button variant="ghost" onClick={closeDialog} type="button">
-                Abort
+                Cancel
               </Button>
               <Button
                 form="asset-form"
@@ -448,7 +448,7 @@ export default function AssetsPageUI({
                 disabled={isSubmitting}
                 className="shadow"
               >
-                {isSubmitting ? "Syncing Map..." : "Fabricate Mapping"}
+                {isSubmitting ? "Creating..." : "Create Asset"}
               </Button>
             </div>
           </div>
