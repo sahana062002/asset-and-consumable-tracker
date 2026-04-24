@@ -8,10 +8,11 @@ import { locationService } from './location.service';
 
 export class AssetService {
   async list(query: z.infer<typeof listAssetsSchema>) {
-    const { page, limit, type, status, search } = query;
+    const { page, limit, type, status, search, location_id } = query;
     const offset = (page - 1) * limit;
 
     const conditions = [];
+    if (location_id) conditions.push(eq(assets.locationId, location_id));
     if (type) conditions.push(eq(assets.type, type));
     if (status) conditions.push(eq(assets.status, status));
     if (search) {

@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Camera, CheckCircle2, UploadCloud, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { assetsApi } from '../lib/api';
+import { assetsApi } from '../api/assets';
 
 interface DisposalFlowProps {
   assetId: number;

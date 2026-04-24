@@ -22,7 +22,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { KeyRound, Loader2 } from 'lucide-react';
-import { usersApi } from '@/lib/api';
+import { usersApi } from '@/api/users';
 import { toast } from 'sonner';
 
 const changePasswordSchema = z.object({

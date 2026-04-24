@@ -57,18 +57,30 @@ export class LocationService {
     });
   }
 
-  async validateParentLevel(level: LocationLevel, parentId?: number | null) {
-    if (level === 'campus') {
-      if (parentId) throw Object.assign(new Error('Campus cannot have a parent'), { statusCode: 400 });
+  async validateParentLevel(level: LocationLevel, parentId?: number | null, currentId?: number) {
+    if (!parentId) {
+      // Allow any level to be a root node if no parent is provided
       return;
     }
-    if (!parentId) throw Object.assign(new Error(`Level ${level} must have a parent`), { statusCode: 400 });
-    const parentRecords = await db.select().from(locations).where(eq(locations.id, parentId));
-    if (!parentRecords.length) throw Object.assign(new Error('Parent not found'), { statusCode: 404 });
-    const parent = parentRecords[0];
+
+    if (currentId && parentId === currentId) {
+      throw Object.assign(new Error('A location cannot be its own parent'), { statusCode: 400 });
+    }
+
+    const all = await this.getAll();
+    if (currentId) {
+      const descendantIds = await this.getChildrenIds(currentId, all);
+      if (descendantIds.includes(parentId)) {
+        throw Object.assign(new Error('Cannot assign a descendant as a parent (circular reference)'), { statusCode: 400 });
+      }
+    }
     
-    if (LEVEL_ORDER[level] !== LEVEL_ORDER[parent.level as LocationLevel] + 1) {
-      throw Object.assign(new Error(`Parent level (${parent.level}) is not exactly one level above child level (${level})`), { statusCode: 400 });
+    const parent = all.find(l => l.id === parentId);
+    if (!parent) throw Object.assign(new Error('Parent not found'), { statusCode: 404 });
+    
+    // Ensure the parent level is "higher" in the hierarchy than the child level
+    if (LEVEL_ORDER[level] <= LEVEL_ORDER[parent.level as LocationLevel]) {
+      throw Object.assign(new Error(`Parent level (${parent.level}) must be higher in hierarchy than child level (${level})`), { statusCode: 400 });
     }
   }
 
@@ -96,7 +108,7 @@ export class LocationService {
 
     const newLevel = (data.level || target.level) as LocationLevel;
     const newParentId = data.parentId !== undefined ? data.parentId : target.parentId;
-    await this.validateParentLevel(newLevel, newParentId);
+    await this.validateParentLevel(newLevel, newParentId, id);
 
     await db.update(locations).set({
       name: data.name,

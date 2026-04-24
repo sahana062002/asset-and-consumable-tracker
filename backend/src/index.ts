@@ -44,6 +44,6 @@ app.use('/api/assets', assetRoutes);
 app.use(errorHandler);
 
 app.listen(Number(port), '0.0.0.0', () => {
-  console.log(`Backend server running on http://127.0.0.1:${port}`);
+  console.log(`Backend server running on http://localhost:${port}`);
 });
 

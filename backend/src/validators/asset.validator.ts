@@ -5,7 +5,8 @@ export const listAssetsSchema = z.object({
   limit: z.string().transform(Number).default('10'),
   type: z.enum(['fixed', 'consumable']).optional(),
   status: z.enum(['active', 'disposed']).optional(),
-  search: z.string().optional()
+  search: z.string().optional(),
+  location_id: z.string().transform(v => (v ? Number(v) : undefined)).optional()
 });
 
 export const createAssetSchema = z.object({

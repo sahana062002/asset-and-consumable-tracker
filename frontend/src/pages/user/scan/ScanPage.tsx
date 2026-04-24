@@ -1,51 +1,34 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useQRScanner } from '../../lib/scanner';
+import { StatusBadge } from '../../../components/ui/StatusBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ScanLine, KeySquare, RefreshCw, XCircle, Search, History, AlertTriangle } from 'lucide-react';
-import { useToast } from '../../hooks/useToast';
-import { StatusBadge } from '../../components/ui/StatusBadge';
+import { ScanLine, KeySquare, XCircle, Search, History, AlertTriangle } from 'lucide-react';
 
-interface ScanHistory {
-  code: string;
-  name: string;
-  type: string;
-  timestamp: number;
+interface ScanPageUIProps {
+  manualCode: string;
+  setManualCode: (val: string) => void;
+  history: any[];
+  handleManualLookup: (e: React.FormEvent) => void;
+  handleClearHistory: () => void;
+  isScanning: boolean;
+  startScan: () => void;
+  stopScan: () => void;
+  error: string | null;
+  onHistoryItemClick: (code: string) => void;
 }
 
-export default function ScanPage() {
-  const navigate = useNavigate();
-  const { error: toastError } = useToast();
-  const [manualCode, setManualCode] = useState('');
-  const [history, setHistory] = useState<ScanHistory[]>([]);
-  
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem('scan_history');
-      if (stored) setHistory(JSON.parse(stored));
-    } catch (e) {}
-  }, []);
-
-  const handleScanSuccess = (decodedText: string) => {
-    stopScan();
-    navigate(`asset/${decodedText}`);
-  };
-
-  const { isScanning, startScan, stopScan, error, cameras, activeCameraId } = useQRScanner("reader", handleScanSuccess);
-
-  const handleManualLookup = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!manualCode.trim()) return;
-    navigate(`asset/${manualCode.trim().toUpperCase()}`);
-  };
-
-  const handleClearHistory = () => {
-    localStorage.removeItem('scan_history');
-    setHistory([]);
-  };
-
+export default function ScanPageUI({
+  manualCode,
+  setManualCode,
+  history,
+  handleManualLookup,
+  handleClearHistory,
+  isScanning,
+  startScan,
+  stopScan,
+  error,
+  onHistoryItemClick
+}: ScanPageUIProps) {
   return (
     <div className="flex flex-col space-y-8 animate-in fade-in duration-300">
       
@@ -100,7 +83,7 @@ export default function ScanPage() {
       <div className="bg-card rounded-2xl shadow-sm border border-border p-6 mt-4">
         <form onSubmit={handleManualLookup} className="space-y-4">
           <Label className="uppercase text-xs font-bold text-muted-foreground tracking-widest flex items-center">
-            <KeySquare size={14} className="mr-1.5" /> Manual Override Override
+            <KeySquare size={14} className="mr-1.5" /> Manual Override
           </Label>
           <div className="flex space-x-2">
             <Input 
@@ -126,7 +109,7 @@ export default function ScanPage() {
            </div>
            <div className="divide-y divide-border">
              {history.map((h, i) => (
-               <div key={i} onClick={() => navigate(`asset/${h.code}`)} className="px-6 py-4 flex items-center justify-between hover:bg-muted/40 cursor-pointer transition-colors group">
+               <div key={i} onClick={() => onHistoryItemClick(h.code)} className="px-6 py-4 flex items-center justify-between hover:bg-muted/40 cursor-pointer transition-colors group">
                  <div>
                    <p className="font-semibold text-sm group-hover:text-primary transition-colors">{h.name}</p>
                    <p className="font-mono text-xs text-muted-foreground">{h.code}</p>

@@ -33,6 +33,7 @@
     "lucide-react": "^0.300.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-fox-toast": "^1.10.20",
     "react-hook-form": "^7.73.1",
     "react-router-dom": "^6.21.1",
     "sonner": "^2.0.7",
